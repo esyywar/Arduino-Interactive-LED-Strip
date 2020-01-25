@@ -8,7 +8,6 @@
  * Knobs control different settings depending on the mode set (e.g. colour in colour set mode, frequency focus in music mode etc.)
  */
 
-
 // FastLED library definitions
 #include <FastLED.h>
 #define LED_PIN     5
@@ -21,7 +20,7 @@ CRGB leds[NUM_LEDS];
 
 // Music visualizer custom definitions
 #define MUSIC_LEDS 1   // number of LEDs to update based on live sound (might prefer change based on strip length)
-#define MUSIC_CLR_INTERVAL 500   // interval of time for music visualizer to increment colour
+#define MUSIC_CLR_INTERVAL 100   // interval of time for music visualizer to increment colour
 
 // update rate
 #define UPDATES_PER_SECOND 100
@@ -29,6 +28,12 @@ CRGB leds[NUM_LEDS];
 // user input control pins
 int potReadPin[] = {0, 1, 2};
 const uint8_t BTN_PIN = 2;
+
+// pin to read from sound sensor
+int sensorPin = A3;
+
+// variable to store value from sensor
+int sensorValue;
 
 // initial mode of operation
 const uint8_t activeMode = 0;
@@ -49,9 +54,9 @@ TBlendType    currentBlending;
 
 // structure for storing the 3 mapped user inputs
 typedef struct userSettings {
-  uint8_t inputA;
-  uint8_t inputB;
-  uint8_t inputC;
+  int inputA;
+  int inputB;
+  int inputC;
 } userInput;
 
 
@@ -175,7 +180,7 @@ void loop() {
 }
 
 
-// turns active mode LED on and the rest are off
+// turns active mode LED on and the rest are off (indicates to user the mode we are in)
 void modeIndicateLED(uint8_t mode) {
    for (int i = 0; i < NUM_MODES; i++) 
    {
@@ -201,24 +206,23 @@ void executeMode(uint8_t mode) {
   switch (mode) 
   {
     case 0:
-      staticColourSet("HSV");
+      staticColourSet();
       break;
     case 1:
-      staticColourSet("RGB");
+      startIndex += 1; /* motion speed */
+      lightShow(startIndex);;
       break;
     case 2:
-      startIndex += 1; /* motion speed */
-      lightShow(startIndex);
+      staticColourSet();
       break;
     default:
-      staticColourSet("RGB");
+      staticColourSet();
   }
 }
 
 
 // interrupt function to run on button press
 void changeMode() {
-
   // reason for this condition is to correct hardware issue of button double triggering... Occurs due to noisy signal or mechanical fault
   // this condition disables the interrupt for 250ms after trigger thereby ignoring the double/triple trigger events
   if (millis() - lastInterrupt > 250)
@@ -243,36 +247,27 @@ userSettings mapInputs (uint8_t range1, uint8_t range2, uint8_t range3) {
 }
 
 
-// function for static colour settings
-// takes user input and maps to HSV of RBG configuration according to active mode
-void staticColourSet(char colourFormat[]) {
-
+// MODE:0 - takes user input and maps to HSV colours
+void staticColourSet() {
   // create variable of structure 'userSettings' and fill with mapped values
   userSettings colours = mapInputs(255, 255, 255);
 
   for (int i = 0; i < NUM_LEDS; i++)
   {
-    if (colourFormat == "RGB")
-    {
-      leds[i].setRGB(colours.inputA, colours.inputB, colours.inputC);
-    }
-    else
-    {
       leds[i] = CHSV(colours.inputA, colours.inputB, colours.inputC);
-    }
   }
 }
 
 
-// Goes through patterns of changing LEDs from the loaded palette
+// MODE:1 - goes through patterns of changing LEDs from the loaded palette
 void lightShow(uint16_t startIndex) {
 
   userSettings pattern = mapInputs(6, 255, 255);
 
-  // First knob is adjusted to choose the colour palette
+  // first knob is adjusted to choose the colour palette
   int paletteSet = pattern.inputA;
 
-  // Second knob is manipulate motion speed
+  // second knob is manipulate motion speed
   int speedControl = pattern.inputB;
   
   // third knob assigns brightness
@@ -308,4 +303,34 @@ void lightShow(uint16_t startIndex) {
       leds[i] = ColorFromPalette(currentPalette, startIndex, brightness, currentBlending);
       startIndex += speedControl;
   }
+}
+
+
+// MODE:2 - real time music visualizer (can configure origin LED, sensitivity and rate of colour change)
+void musicVisualizer() {
+  userSettings musicSettings = mapInputs(NUM_LEDS, 1023, 500);
+
+  // first knob is to select point source LED
+  int origin = musicSettings.inputA;
+
+  // second knob is sound threshold to illuminate LEDs
+  int threshold = musicSettings.inputB;
+
+  // third knob decides time interval between colour increments
+  int colourInterval = musicSettings.inputC;
+
+  // might need to make these global variables
+  static unsigned long lastClrChange;
+  static uint8_t colour;
+
+  // increment the colour every specified amount of time
+  if (millis() - lastClrChange > colourInterval)
+  {
+    colour ++;
+    lastClrChange = millis();
+  }
+
+  // read sensor value that is averaged over specified number of data points
+  sensorValue = analogRead(sensorPin);
+  
 }
