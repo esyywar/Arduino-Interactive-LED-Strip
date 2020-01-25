@@ -59,14 +59,14 @@ void loop() {
   }
 
   // read sensor value that is averaged over specified number of data points
-  sensorValue = analogRead(sensorPin); //movingAverage(points);
+  sensorValue = analogRead(sensorPin);
+  
+  // colour the first pixel according to the live sound
+  colourOriginPixel(sensorValue, colour, threshold, origin);  
 
   // propagate the colour wave in 2 directions from origin
-  //moveWave2(origin);
-  moveWave();
-
-  // colour the first pixel according to the live sound
-  colourPixel(sensorValue, colour, threshold);  
+  pointSourceWave(origin);
+  //moveWave();
 
   FastLED.show();
   FastLED.delay(1000 / UPDATES_PER_SECOND);
@@ -91,6 +91,28 @@ void colourPixel (int sensorValue, uint8_t colour, int threshold) {
 }
 
 
+// colour pixels at the chosen source on LED strip
+void colourOriginPixel (int sensorValue, uint8_t colour, int threshold, int origin) {
+  uint8_t brightness;
+
+  int farEndSource = origin + MUSIC_LEDS - 1;
+  int nearEndSource = origin - MUSIC_LEDS - 1;
+
+  for (int i = nearEndSource; i < farEndSource; i++) {
+    if (sensorValue > threshold)
+    {
+      brightness = map(sensorValue, 0, 1023, 80, 255);
+      leds[i] = CHSV(colour, 255, brightness);
+    }
+    else
+    {
+      leds[i].setRGB(0, 0, 0);
+    }
+  }
+}
+
+
+// function to move the wave from first LED toward the far end
 void moveWave() {
   int blanks = MUSIC_LEDS - 1;
   
@@ -101,9 +123,10 @@ void moveWave() {
 }
 
 
-void moveWave2 (int origin) {
+// function takes an origin point LED and propagates the wave in both directions away from source
+void pointSourceWave (int origin) {
   // identify which LED to start the wave from (subtract 1 for indexing beginning at 0)
-  int farEndStart = origin + MUSIC_LEDS - 1;
+  int farEndStart = origin + MUSIC_LEDS - 2;
   int nearEndStart = origin - MUSIC_LEDS - 1;
 
   // move LED wave toward the far end
