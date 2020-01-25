@@ -213,7 +213,7 @@ void executeMode(uint8_t mode) {
       lightShow(startIndex);;
       break;
     case 2:
-      staticColourSet();
+      musicVisualizer();
       break;
     default:
       staticColourSet();
@@ -228,14 +228,13 @@ void changeMode() {
   if (millis() - lastInterrupt > 250)
   {
     state ++;  
-    Serial.println(millis());
     lastInterrupt = millis();
   }
 }
 
 
 // returns mapped inputs from input knobs in form of structure 'userSettings'
-userSettings mapInputs (uint8_t range1, uint8_t range2, uint8_t range3) {
+userSettings mapInputs (int range1, int range2, int range3) {
   userSettings mapped;
 
   // read and map the values
@@ -319,9 +318,16 @@ void musicVisualizer() {
   // third knob decides time interval between colour increments
   int colourInterval = musicSettings.inputC;
 
-  // might need to make these global variables
+  // initialize the colour which will be swept through
+  static uint8_t colour = 1;
+
+  // initialize time of last colour change
   static unsigned long lastClrChange;
-  static uint8_t colour;
+
+  Serial.print("time is ");
+  Serial.print(millis());
+  Serial.print(" and last colour change at ");
+  Serial.println(lastClrChange);
 
   // increment the colour every specified amount of time
   if (millis() - lastClrChange > colourInterval)
@@ -332,5 +338,51 @@ void musicVisualizer() {
 
   // read sensor value that is averaged over specified number of data points
   sensorValue = analogRead(sensorPin);
-  
+
+  // colour the first pixel according to the live sound
+  colourOriginPixel(sensorValue, colour, threshold, origin);  
+
+  // propagate the colour wave in 2 directions from origin
+  pointSourceWave(origin);  
+}
+
+
+// colour pixels at the chosen source on LED strip for music visualizer
+void colourOriginPixel (int sensorValue, uint8_t colour, int threshold, int origin) {
+  uint8_t brightness;
+
+  int farEndSource = origin + MUSIC_LEDS - 1;
+  int nearEndSource = origin - MUSIC_LEDS - 1;
+
+  for (int i = nearEndSource; i < farEndSource; i++) {
+    if (sensorValue > threshold)
+    {
+      brightness = map(sensorValue, 0, 1023, 80, 255);
+      leds[i] = CHSV(colour, 255, brightness);
+    }
+    else
+    {
+      leds[i].setRGB(0, 0, 0);
+    }
+  }
+}
+
+
+// function takes an origin point LED and propagates the wave in both directions away from source for music visualizer
+void pointSourceWave (int origin) {
+  // identify which LED to start the wave from (subtract 1 for indexing beginning at 0)
+  int farEndStart = origin + MUSIC_LEDS - 2;
+  int nearEndStart = origin - MUSIC_LEDS - 1;
+
+  // move LED wave toward the far end
+  for (int i = NUM_LEDS; i > farEndStart; i--)
+  {
+    leds[i] = leds[i - 1];
+  }
+
+  // move LED wave toward the near end
+  for (int i = 0; i < nearEndStart; i++)
+  {
+    leds[i] = leds[i + 1];    
+  }
 }

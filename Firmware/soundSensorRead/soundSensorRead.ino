@@ -22,7 +22,7 @@ TBlendType    currentBlending;
 
 // Number of LEDs to update based on live sound (might prefer change based on strip length)
 // const int musicLEDs = MUSIC_LEDS;
-const int clrInterval = MUSIC_CLR_INTERVAL;
+//const int clrInterval = MUSIC_CLR_INTERVAL;
 
 uint8_t colour = 1;
 
@@ -90,17 +90,6 @@ void colourOriginPixel (int sensorValue, uint8_t colour, int threshold, int orig
     {
       leds[i].setRGB(0, 0, 0);
     }
-  }
-}
-
-
-// function to move the wave from first LED toward the far end
-void moveWave() {
-  int blanks = MUSIC_LEDS - 1;
-  
-  for (int i = NUM_LEDS; i > blanks; i--)
-  {
-    leds[i] = leds[i - 1];
   }
 }
 
