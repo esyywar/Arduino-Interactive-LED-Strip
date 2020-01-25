@@ -209,7 +209,7 @@ void executeMode(uint8_t mode) {
       staticColourSet();
       break;
     case 1:
-      startIndex += 1; /* motion speed */
+      startIndex++; /* motion speed */
       lightShow(startIndex);
       break;
     case 2:
@@ -323,11 +323,6 @@ void musicVisualizer() {
 
   // initialize time of last colour change
   static unsigned long lastClrChange;
-
-  Serial.print("time is ");
-  Serial.print(millis());
-  Serial.print(" and last colour change at ");
-  Serial.println(lastClrChange);
 
   // increment the colour every specified amount of time
   if (millis() - lastClrChange > colourInterval)
