@@ -210,7 +210,7 @@ void executeMode(uint8_t mode) {
       break;
     case 1:
       startIndex += 1; /* motion speed */
-      lightShow(startIndex);;
+      lightShow(startIndex);
       break;
     case 2:
       musicVisualizer();
