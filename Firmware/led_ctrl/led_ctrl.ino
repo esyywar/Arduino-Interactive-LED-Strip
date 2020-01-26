@@ -49,7 +49,6 @@ const uint8_t modeLEDs[NUM_MODES] = {6, 7, 8};
 
 // for the interrupt function
 volatile byte state = NUM_MODES;
-unsigned long lastInterrupt;
 
 CRGBPalette16 currentPalette;
 TBlendType    currentBlending;
@@ -57,9 +56,9 @@ TBlendType    currentBlending;
 
 // structure for storing the 3 mapped user inputs
 typedef struct userSettings {
-  int inputA;
-  int inputB;
-  int inputC;
+  uint16_t inputA;
+  uint16_t inputB;
+  uint16_t inputC;
 } userInput;
 
 
@@ -168,7 +167,6 @@ void setup() {
 
 
 void loop() {
-
   // calculate the active state
   mode = state % NUM_MODES;
 
@@ -225,8 +223,9 @@ void executeMode(uint8_t mode) {
 
 // interrupt function to run on button press
 void changeMode() {
-  // reason for this condition is to correct hardware issue of button double triggering... Occurs due to noisy signal or mechanical fault
-  // this condition disables the interrupt for 250ms after trigger thereby ignoring the double/triple trigger events
+  // reason for this condition is to correct hardware issue of button double triggering...
+  static unsigned long lastInterrupt;
+  
   if (millis() - lastInterrupt > 250)
   {
     state++;  
@@ -309,7 +308,7 @@ void lightShow(uint16_t startIndex) {
 
 // MODE:2 - real time music visualizer (can configure origin LED, sensitivity and rate of colour change)
 void musicVisualizer() {
-  userSettings musicSettings = mapInputs(NUM_LEDS, 1023, 254);
+  userSettings musicSettings = mapInputs(NUM_LEDS, 1023, 255);
 
   // first knob is to select point source LED
   uint16_t origin = musicSettings.inputA;
@@ -317,19 +316,19 @@ void musicVisualizer() {
   // second knob is sound threshold to illuminate LEDs
   uint16_t threshold = musicSettings.inputB;
 
-  // third knob decides time interval between colour increments
-  uint16_t colourIncrement = musicSettings.inputC;
+  // third knob decides minimum brightness when threshold exceeded (effectively sets brightness for this mode)
+  uint8_t minBrightness = musicSettings.inputC;
 
   // initialize the colour which will be swept through
   static uint8_t colour = 1;
-  
+
   colour++;
  
   // read sensor value that is averaged over specified number of data points
-  sensorValue = analogRead(sensorPin);
+  sensorValue = analogRead(sensorPin);;
 
   // colour the first pixel according to the live sound
-  colourOriginPixel(sensorValue, colour, threshold, origin);  
+  colourOriginPixel(sensorValue, colour, threshold, origin, minBrightness);  
 
   // propagate the colour wave in 2 directions from origin
   pointSourceWave(origin);  
@@ -337,7 +336,7 @@ void musicVisualizer() {
 
 
 // colour pixels at the chosen source on LED strip for music visualizer
-void colourOriginPixel (int sensorValue, uint8_t colour, int threshold, int origin) {
+void colourOriginPixel (uint16_t sensorValue, uint8_t colour, uint16_t threshold, uint16_t origin, uint8_t minBrightness) {
 
   uint16_t farEndSource = origin + MUSIC_LEDS - 1;
   uint16_t nearEndSource = origin - MUSIC_LEDS - 1;
@@ -345,7 +344,7 @@ void colourOriginPixel (int sensorValue, uint8_t colour, int threshold, int orig
   for (int i = nearEndSource; i < farEndSource; i++) {
     if (sensorValue > threshold)
     {
-      leds[i] = CHSV(colour, 255, map(sensorValue, 0, 1023, 80, 255));
+      leds[i] = CHSV(colour, 255, map(sensorValue, 0, 1023, minBrightness, 255));
     }
     else
     {
