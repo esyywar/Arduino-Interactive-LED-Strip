@@ -8,6 +8,9 @@
  * Knobs control different settings depending on the mode set (e.g. colour in colour set mode, frequency focus in music mode etc.)
  */
 
+// to use program memory space
+#include <avr/pgmspace.h>
+
 // FastLED library definitions
 #include <FastLED.h>
 #define LED_PIN     5
@@ -29,14 +32,14 @@ CRGB leds[NUM_LEDS];
 #define NUM_MODES 3
 
 // user input control pins
-int potReadPin[] = {0, 1, 2};
+uint8_t potReadPin[] = {0, 1, 2};
 const uint8_t BTN_PIN = 2;
 
 // pin to read from sound sensor
-int sensorPin = A3;
+const uint8_t sensorPin = A3;
 
-// variable to store value from sensor
-int sensorValue;
+// variable to store 10 bit value from sound sensor
+uint16_t sensorValue;
 
 // declare initial mode
 uint8_t mode = 0;
@@ -168,7 +171,6 @@ void loop() {
 
   // calculate the active state
   mode = state % NUM_MODES;
-  Serial.println(mode);
 
   // change LED to show user what mode we are in
   modeIndicateLED(mode);
@@ -201,7 +203,6 @@ void modeIndicateLED(uint8_t mode) {
 void executeMode(uint8_t mode) {
 
   // for start index in color pallete mode
-  // made static so that only initializes to 1 on the first call
   static uint16_t startIndex = 1;
 
   switch (mode) 
@@ -210,7 +211,7 @@ void executeMode(uint8_t mode) {
       staticColourSet();
       break;
     case 1:
-      startIndex++; /* motion speed */
+      startIndex++; // motion speed
       lightShow(startIndex);
       break;
     case 2:
@@ -228,7 +229,7 @@ void changeMode() {
   // this condition disables the interrupt for 250ms after trigger thereby ignoring the double/triple trigger events
   if (millis() - lastInterrupt > 250)
   {
-    state ++;  
+    state++;  
     lastInterrupt = millis();
   }
 }
@@ -265,10 +266,10 @@ void lightShow(uint16_t startIndex) {
   userSettings pattern = mapInputs(6, 255, 255);
 
   // first knob is adjusted to choose the colour palette
-  int paletteSet = pattern.inputA;
+  uint8_t paletteSet = pattern.inputA;
 
   // second knob is manipulate motion speed
-  int speedControl = pattern.inputB;
+  uint8_t speedControl = pattern.inputB;
   
   // third knob assigns brightness
   uint8_t brightness = pattern.inputC;
@@ -298,7 +299,7 @@ void lightShow(uint16_t startIndex) {
   }
   
   // write to LEDS as required
-  for( int i = 0; i < NUM_LEDS; i++) 
+  for (int i = 0; i < NUM_LEDS; i++) 
   {
       leds[i] = ColorFromPalette(currentPalette, startIndex, brightness, currentBlending);
       startIndex += speedControl;
@@ -308,30 +309,22 @@ void lightShow(uint16_t startIndex) {
 
 // MODE:2 - real time music visualizer (can configure origin LED, sensitivity and rate of colour change)
 void musicVisualizer() {
-  userSettings musicSettings = mapInputs(NUM_LEDS, 1023, 500);
+  userSettings musicSettings = mapInputs(NUM_LEDS, 1023, 254);
 
   // first knob is to select point source LED
-  int origin = musicSettings.inputA;
+  uint16_t origin = musicSettings.inputA;
 
   // second knob is sound threshold to illuminate LEDs
-  int threshold = musicSettings.inputB;
+  uint16_t threshold = musicSettings.inputB;
 
   // third knob decides time interval between colour increments
-  int colourInterval = musicSettings.inputC;
+  uint16_t colourIncrement = musicSettings.inputC;
 
   // initialize the colour which will be swept through
   static uint8_t colour = 1;
-
-  // initialize time of last colour change
-  static unsigned long lastClrChange;
-
-  // increment the colour every specified amount of time
-  if (millis() - lastClrChange > colourInterval)
-  {
-    colour ++;
-    lastClrChange = millis();
-  }
-
+  
+  colour++;
+ 
   // read sensor value that is averaged over specified number of data points
   sensorValue = analogRead(sensorPin);
 
@@ -345,16 +338,14 @@ void musicVisualizer() {
 
 // colour pixels at the chosen source on LED strip for music visualizer
 void colourOriginPixel (int sensorValue, uint8_t colour, int threshold, int origin) {
-  uint8_t brightness;
 
-  int farEndSource = origin + MUSIC_LEDS - 1;
-  int nearEndSource = origin - MUSIC_LEDS - 1;
+  uint16_t farEndSource = origin + MUSIC_LEDS - 1;
+  uint16_t nearEndSource = origin - MUSIC_LEDS - 1;
 
   for (int i = nearEndSource; i < farEndSource; i++) {
     if (sensorValue > threshold)
     {
-      brightness = map(sensorValue, 0, 1023, 80, 255);
-      leds[i] = CHSV(colour, 255, brightness);
+      leds[i] = CHSV(colour, 255, map(sensorValue, 0, 1023, 80, 255));
     }
     else
     {
@@ -367,8 +358,8 @@ void colourOriginPixel (int sensorValue, uint8_t colour, int threshold, int orig
 // function takes an origin point LED and propagates the wave in both directions away from source for music visualizer
 void pointSourceWave (int origin) {
   // identify which LED to start the wave from (subtract 1 for indexing beginning at 0)
-  int farEndStart = origin + MUSIC_LEDS - 2;
-  int nearEndStart = origin - MUSIC_LEDS - 1;
+  uint16_t farEndStart = origin + MUSIC_LEDS - 2;
+  uint16_t nearEndStart = origin - MUSIC_LEDS - 1;
 
   // move LED wave toward the far end
   for (int i = NUM_LEDS; i > farEndStart; i--)
