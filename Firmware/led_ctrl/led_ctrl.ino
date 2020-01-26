@@ -25,6 +25,9 @@ CRGB leds[NUM_LEDS];
 // update rate
 #define UPDATES_PER_SECOND 100
 
+// number of modes to cycle
+#define NUM_MODES 3
+
 // user input control pins
 int potReadPin[] = {0, 1, 2};
 const uint8_t BTN_PIN = 2;
@@ -35,17 +38,14 @@ int sensorPin = A3;
 // variable to store value from sensor
 int sensorValue;
 
-// initial mode of operation
-const uint8_t activeMode = 0;
-
-// number of available modes
-const uint8_t NUM_MODES = 3;
+// declare initial mode
+uint8_t mode = 0;
 
 // pins used for LED mode indication
 const uint8_t modeLEDs[NUM_MODES] = {6, 7, 8};
 
 // for the interrupt function
-volatile byte state = 0;
+volatile byte state = NUM_MODES;
 unsigned long lastInterrupt;
 
 CRGBPalette16 currentPalette;
@@ -167,7 +167,8 @@ void setup() {
 void loop() {
 
   // calculate the active state
-  uint8_t mode = state % NUM_MODES;
+  mode = state % NUM_MODES;
+  Serial.println(mode);
 
   // change LED to show user what mode we are in
   modeIndicateLED(mode);
