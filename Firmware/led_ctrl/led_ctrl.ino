@@ -8,9 +8,6 @@
  * Knobs control different settings depending on the mode set (e.g. colour in colour set mode, frequency focus in music mode etc.)
  */
 
-// to use program memory space
-#include <avr/pgmspace.h>
-
 // FastLED library definitions
 #include <FastLED.h>
 #define LED_PIN     5
@@ -20,10 +17,6 @@
 #define LED_TYPE    WS2811
 #define COLOR_ORDER GRB
 CRGB leds[NUM_LEDS];
-
-// Music visualizer custom definitions
-#define MUSIC_LEDS 1   // number of LEDs to update based on live sound (might prefer change based on strip length)
-#define MUSIC_CLR_INTERVAL 100   // interval of time for music visualizer to increment colour
 
 // update rate
 #define UPDATES_PER_SECOND 100
@@ -323,38 +316,26 @@ void musicVisualizer() {
 
 // colour pixels at the chosen source on LED strip for music visualizer
 void colourOriginPixel (uint16_t sensorValue, uint8_t colour, uint16_t origin, uint16_t threshold, uint8_t minBrightness) {
-
-  uint16_t farEndSource = origin + MUSIC_LEDS - 1;
-  uint16_t nearEndSource = origin - MUSIC_LEDS - 1;
-
-  for (int i = nearEndSource; i < farEndSource; i++) {
-    if (sensorValue > threshold)
-    {
-      leds[i] = CHSV(colour, 255, map(sensorValue, 0, 1023, minBrightness, 255));
-    }
-    else
-    {
-      leds[i].setRGB(0, 0, 0);
-    }
+  if (sensorValue > threshold)
+  {
+    leds[origin] = CHSV(colour, 255, map(sensorValue, 0, 1023, minBrightness, 255));
+  }
+  else 
+  {
+    leds[origin].setRGB(0, 0, 0);
   }
 }
 
 
 // function takes an origin point LED and propagates the wave in both directions away from source for music visualizer
-void pointSourceWave (int origin) {
-  // identify which LED to start the wave from (subtract 1 for indexing beginning at 0)
-  uint16_t farEndStart = origin + MUSIC_LEDS - 2;
-  uint16_t nearEndStart = origin - MUSIC_LEDS - 1;
-
-  // move LED wave toward the far end
-  for (int i = NUM_LEDS; i > farEndStart; i--)
-  {
-    leds[i] = leds[i - 1];
-  }
-
-  // move LED wave toward the near end
-  for (int i = 0; i < nearEndStart; i++)
+void pointSourceWave (uint16_t origin) {
+  for (int i = 0; i < origin; i++) 
   {
     leds[i] = leds[i + 1];    
+  }
+  
+  for (int i = NUM_LEDS; i > origin; i--) 
+  {
+    leds[i] = leds[i - 1];
   }
 }
