@@ -182,7 +182,7 @@ void loop() {
 
 
 // turns active mode LED on and the rest are off (indicates to user the mode we are in)
-void modeIndicateLED(uint8_t mode) {
+void modeIndicateLED (uint8_t mode) {
    for (int i = 0; i < NUM_MODES; i++) 
    {
       if (i == mode)
@@ -235,7 +235,7 @@ void changeMode() {
 
 
 // returns mapped inputs from input knobs in form of structure 'userSettings'
-userSettings mapInputs (int range1, int range2, int range3) {
+userSettings mapInputs (uint16_t range1, uint16_t range2, uint16_t range3) {
   userSettings mapped;
 
   // read and map the values
@@ -265,15 +265,10 @@ void lightShow(uint16_t startIndex) {
   userSettings pattern = mapInputs(6, 255, 255);
 
   // first knob is adjusted to choose the colour palette
-  uint8_t paletteSet = pattern.inputA;
-
   // second knob is manipulate motion speed
-  uint8_t speedControl = pattern.inputB;
-  
   // third knob assigns brightness
-  uint8_t brightness = pattern.inputC;
 
-  switch (paletteSet)
+  switch (pattern.inputA)
   {
     case 0:
       currentPalette = RainbowColors_p;
@@ -300,8 +295,8 @@ void lightShow(uint16_t startIndex) {
   // write to LEDS as required
   for (int i = 0; i < NUM_LEDS; i++) 
   {
-      leds[i] = ColorFromPalette(currentPalette, startIndex, brightness, currentBlending);
-      startIndex += speedControl;
+      leds[i] = ColorFromPalette(currentPalette, startIndex, pattern.inputC, currentBlending);
+      startIndex += pattern.inputB;
   }
 }
 
@@ -310,33 +305,24 @@ void lightShow(uint16_t startIndex) {
 void musicVisualizer() {
   userSettings musicSettings = mapInputs(NUM_LEDS, 1023, 255);
 
-  // first knob is to select point source LED
-  uint16_t origin = musicSettings.inputA;
-
-  // second knob is sound threshold to illuminate LEDs
-  uint16_t threshold = musicSettings.inputB;
-
-  // third knob decides minimum brightness when threshold exceeded (effectively sets brightness for this mode)
-  uint8_t minBrightness = musicSettings.inputC;
-
   // initialize the colour which will be swept through
   static uint8_t colour = 1;
 
   colour++;
  
   // read sensor value that is averaged over specified number of data points
-  sensorValue = analogRead(sensorPin);;
+  sensorValue = analogRead(sensorPin);
 
   // colour the first pixel according to the live sound
-  colourOriginPixel(sensorValue, colour, threshold, origin, minBrightness);  
+  colourOriginPixel(sensorValue, colour, musicSettings.inputA, musicSettings.inputB, musicSettings.inputC);  
 
   // propagate the colour wave in 2 directions from origin
-  pointSourceWave(origin);  
+  pointSourceWave(musicSettings.inputA);  
 }
 
 
 // colour pixels at the chosen source on LED strip for music visualizer
-void colourOriginPixel (uint16_t sensorValue, uint8_t colour, uint16_t threshold, uint16_t origin, uint8_t minBrightness) {
+void colourOriginPixel (uint16_t sensorValue, uint8_t colour, uint16_t origin, uint16_t threshold, uint8_t minBrightness) {
 
   uint16_t farEndSource = origin + MUSIC_LEDS - 1;
   uint16_t nearEndSource = origin - MUSIC_LEDS - 1;
