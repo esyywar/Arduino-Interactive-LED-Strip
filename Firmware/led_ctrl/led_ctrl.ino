@@ -24,9 +24,14 @@ CRGB leds[NUM_LEDS];
 // number of modes to cycle
 #define NUM_MODES 3
 
+// change mode button pin to attach interrupt
+#define BTN_PIN 2
+
+// maximum analog reading from sound sensor (less than 1023 due to pull down resistor)
+#define SENSOR_MAX 102
+
 // user input control pins
 uint8_t potReadPin[] = {0, 1, 2};
-const uint8_t BTN_PIN = 2;
 
 // pin to read from sound sensor
 const uint8_t sensorPin = A3;
@@ -296,7 +301,8 @@ void lightShow(uint16_t startIndex) {
 
 // MODE:2 - real time music visualizer (can configure origin LED, sensitivity and rate of colour change)
 void musicVisualizer() {
-  userSettings musicSettings = mapInputs(NUM_LEDS, 1023, 255);
+  
+  userSettings musicSettings = mapInputs(NUM_LEDS, SENSOR_MAX, 255);  // second map value due to a 1:10 pull down resistor on sensor pin
 
   // initialize the colour which will be swept through
   static uint8_t colour = 1;
@@ -318,7 +324,7 @@ void musicVisualizer() {
 void colourOriginPixel (uint16_t sensorValue, uint8_t colour, uint16_t origin, uint16_t threshold, uint8_t minBrightness) {
   if (sensorValue > threshold)
   {
-    leds[origin] = CHSV(colour, 255, map(sensorValue, 0, 1023, minBrightness, 255));
+    leds[origin] = CHSV(colour, 255, map(sensorValue, 0, SENSOR_MAX, minBrightness, 255));
   }
   else 
   {
