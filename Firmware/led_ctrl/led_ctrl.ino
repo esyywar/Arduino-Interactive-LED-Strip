@@ -27,8 +27,8 @@ CRGB leds[NUM_LEDS];
 // change mode button pin to attach interrupt
 #define BTN_PIN 2
 
-// maximum analog reading from sound sensor (less than 1023 due to pull down resistor)
-#define SENSOR_MAX 102
+// maximum analog reading from sound sensor (sensor read out is after 10k/100k voltage divider and therefore 1023/11=93)
+#define SENSOR_MAX 93
 
 // user input control pins
 uint8_t potReadPin[] = {0, 1, 2};
