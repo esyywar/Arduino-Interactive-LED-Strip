@@ -647,4 +647,8 @@ Text GLabel 5600 3350 3    50   Input ~ 0
 VCC
 Wire Wire Line
 	8500 5000 9050 5000
+Text GLabel 8950 3850 2    50   Input ~ 0
+A3
+Wire Wire Line
+	8900 3850 8950 3850
 $EndSCHEMATC
