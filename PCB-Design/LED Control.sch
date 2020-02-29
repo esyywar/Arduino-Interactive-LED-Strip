@@ -188,7 +188,7 @@ U 1 1 5DC63C25
 P 5300 2900
 F 0 "J2" H 5218 2575 50  0000 C CNN
 F 1 "TO WS2812B LED STRIP" H 5218 2666 50  0000 C CNN
-F 2 "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MPT-0,5-3-2.54_1x03_P2.54mm_Horizontal" H 5300 2900 50  0001 C CNN
+F 2 "TerminalBlock_TE-Connectivity:TerminalBlock_TE_282834-3_1x03_P2.54mm_Horizontal" H 5300 2900 50  0001 C CNN
 F 3 "~" H 5300 2900 50  0001 C CNN
 	1    5300 2900
 	-1   0    0    1   
@@ -229,7 +229,7 @@ U 1 1 5E3E22AC
 P 1800 5500
 F 0 "J3" H 1718 5175 50  0000 C CNN
 F 1 "Sound Sensor" H 1718 5266 50  0000 C CNN
-F 2 "TerminalBlock_Phoenix:TerminalBlock_Phoenix_MPT-0,5-3-2.54_1x03_P2.54mm_Horizontal" H 1800 5500 50  0001 C CNN
+F 2 "TerminalBlock_TE-Connectivity:TerminalBlock_TE_282834-3_1x03_P2.54mm_Horizontal" H 1800 5500 50  0001 C CNN
 F 3 "~" H 1800 5500 50  0001 C CNN
 	1    1800 5500
 	-1   0    0    1   
@@ -589,8 +589,6 @@ F 3 "~" H 9950 3550 50  0001 C CNN
 	-1   0    0    1   
 $EndComp
 Wire Wire Line
-	9350 2700 9800 2700
-Wire Wire Line
 	9500 3550 9800 3550
 Wire Wire Line
 	9800 4500 9500 4500
@@ -621,10 +619,10 @@ Connection ~ 9950 2200
 Wire Wire Line
 	9950 2200 10450 2200
 $Comp
-L power:GND #PWR?
+L power:GND #PWR0101
 U 1 1 5E621F08
 P 6100 2500
-F 0 "#PWR?" H 6100 2250 50  0001 C CNN
+F 0 "#PWR0101" H 6100 2250 50  0001 C CNN
 F 1 "GND" H 6105 2327 50  0000 C CNN
 F 2 "" H 6100 2500 50  0001 C CNN
 F 3 "" H 6100 2500 50  0001 C CNN
@@ -633,4 +631,6 @@ F 3 "" H 6100 2500 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	6100 2800 6100 2500
+Wire Wire Line
+	9800 2700 9350 2700
 $EndSCHEMATC
