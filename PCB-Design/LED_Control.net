@@ -1,7 +1,7 @@
 (export (version D)
   (design
     (source C:\Users\rahul\Desktop\Dev_Projects\Embedded\Arduino-Interactive-LED-Strip\PCB-Design\LED_Control.sch)
-    (date "2020-02-29 12:23:55 PM")
+    (date "2020-02-29 11:19:43 PM")
     (tool "Eeschema (5.1.5)-3")
     (sheet (number 1) (name /) (tstamps /)
       (title_block
