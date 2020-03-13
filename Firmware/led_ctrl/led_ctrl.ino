@@ -302,7 +302,7 @@ void lightShow(uint16_t startIndex) {
 // MODE:2 - real time music visualizer (can configure origin LED, sensitivity and rate of colour change)
 void musicVisualizer() {
   
-  userSettings musicSettings = mapInputs(NUM_LEDS + 1, SENSOR_MAX, 255);  // second map value due to a 1:10 pull down resistor on sensor pin
+  userSettings musicSettings = mapInputs(NUM_LEDS, SENSOR_MAX, 255);  // second map value due to a 1:10 pull down resistor on sensor pin
 
   // initialize the colour which will be swept through
   static uint8_t colour = 1;
