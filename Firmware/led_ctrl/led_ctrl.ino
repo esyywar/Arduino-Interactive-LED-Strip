@@ -10,7 +10,7 @@
 
 // FastLED library definitions
 #include <FastLED.h>
-#define LED_PIN     5
+#define LED_PIN     4
 #define NUM_LEDS    60
 #define BRIGHTNESS  64
 #define CONTROLS    3
@@ -324,7 +324,7 @@ void musicVisualizer() {
 void colourOriginPixel (uint16_t sensorValue, uint8_t colour, uint16_t origin, uint16_t threshold, uint8_t minBrightness) {
   if (sensorValue > threshold)
   {
-    leds[origin] = CHSV(colour, 255, map(sensorValue, 0, SENSOR_MAX, minBrightness, 255));
+    leds[origin] = CHSV(colour, 255, map(sensorValue, 0, SENSOR_MAX, (minBrightness * 0.9), 255));
   }
   else 
   {

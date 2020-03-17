@@ -164,8 +164,6 @@ F 4 "C17414" H 7700 2150 50  0001 C CNN "LCSC"
 	1    7700 2150
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	8750 2550 8750 2200
 NoConn ~ 6750 2700
 NoConn ~ 7150 2700
 $Comp
@@ -236,41 +234,35 @@ F 3 "~" H 1600 5950 50  0001 C CNN
 $EndComp
 Text Notes 2650 4600 0    50   ~ 0
 SOUND SENSOR
-Text GLabel 2250 6500 3    50   Input ~ 0
-VCC
-Wire Wire Line
-	2250 6050 2250 6500
-Text Label 1800 5850 0    50   ~ 0
+Text Label 1800 5950 0    50   ~ 0
 SS_GND
-Text Label 1800 6050 0    50   ~ 0
+Text Label 1800 5850 0    50   ~ 0
 SS_PWR
 $Comp
 L power:GND #PWR0114
 U 1 1 5E3F3C81
-P 2950 5050
-F 0 "#PWR0114" H 2950 4800 50  0001 C CNN
-F 1 "GND" H 2955 4877 50  0000 C CNN
-F 2 "" H 2950 5050 50  0001 C CNN
-F 3 "" H 2950 5050 50  0001 C CNN
-	1    2950 5050
+P 2950 5150
+F 0 "#PWR0114" H 2950 4900 50  0001 C CNN
+F 1 "GND" H 2955 4977 50  0000 C CNN
+F 2 "" H 2950 5150 50  0001 C CNN
+F 3 "" H 2950 5150 50  0001 C CNN
+	1    2950 5150
 	-1   0    0    1   
 $EndComp
 $Comp
 L Device:R R7
 U 1 1 5E40F635
-P 2800 5950
-F 0 "R7" V 2593 5950 50  0000 C CNN
-F 1 "100k" V 2684 5950 50  0000 C CNN
-F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P5.08mm_Horizontal" V 2730 5950 50  0001 C CNN
-F 3 "~" H 2800 5950 50  0001 C CNN
-	1    2800 5950
+P 2950 6050
+F 0 "R7" V 2743 6050 50  0000 C CNN
+F 1 "100k" V 2834 6050 50  0000 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P5.08mm_Horizontal" V 2880 6050 50  0001 C CNN
+F 3 "~" H 2950 6050 50  0001 C CNN
+	1    2950 6050
 	0    1    1    0   
 $EndComp
-Wire Wire Line
-	2650 5950 1800 5950
-Text GLabel 4350 5950 2    50   Input ~ 0
+Text GLabel 4350 6050 2    50   Input ~ 0
 A3
-Text Label 1800 5950 0    50   ~ 0
+Text Label 1800 6050 0    50   ~ 0
 SS_DATA_OUT
 Wire Wire Line
 	5950 3350 5950 3000
@@ -299,38 +291,33 @@ NoConn ~ 9050 3950
 $Comp
 L Device:C_Small C4
 U 1 1 5E4E4C59
-P 3250 5600
-F 0 "C4" H 3342 5646 50  0000 L CNN
-F 1 "0.1uF" H 3342 5555 50  0000 L CNN
-F 2 "Capacitor_THT:C_Disc_D3.4mm_W2.1mm_P2.50mm" H 3250 5600 50  0001 C CNN
-F 3 "~" H 3250 5600 50  0001 C CNN
-	1    3250 5600
+P 3350 5700
+F 0 "C4" H 3442 5746 50  0000 L CNN
+F 1 "0.1uF" H 3442 5655 50  0000 L CNN
+F 2 "Capacitor_THT:C_Disc_D3.4mm_W2.1mm_P2.50mm" H 3350 5700 50  0001 C CNN
+F 3 "~" H 3350 5700 50  0001 C CNN
+	1    3350 5700
 	-1   0    0    1   
 $EndComp
 Wire Wire Line
-	3250 5500 3250 5300
+	3350 5600 3350 5400
 Text GLabel 8100 1700 1    50   Input ~ 0
 VCC
 Wire Wire Line
-	2950 5300 2950 5050
+	2950 5400 2950 5150
 $Comp
 L Device:R R8
 U 1 1 5E43894A
-P 3750 5600
-F 0 "R8" H 3820 5646 50  0000 L CNN
-F 1 "10k" H 3820 5555 50  0000 L CNN
-F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P5.08mm_Horizontal" V 3680 5600 50  0001 C CNN
-F 3 "~" H 3750 5600 50  0001 C CNN
-	1    3750 5600
+P 3850 5700
+F 0 "R8" H 3920 5746 50  0000 L CNN
+F 1 "10k" H 3920 5655 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P5.08mm_Horizontal" V 3780 5700 50  0001 C CNN
+F 3 "~" H 3850 5700 50  0001 C CNN
+	1    3850 5700
 	-1   0    0    1   
 $EndComp
-Connection ~ 3750 5950
 Wire Wire Line
-	3750 5950 4350 5950
-Wire Wire Line
-	3750 5450 3750 5300
-Wire Wire Line
-	3250 5950 3250 5700
+	3350 6050 3350 5800
 Wire Wire Line
 	8050 3150 7700 3150
 Wire Wire Line
@@ -343,7 +330,7 @@ Connection ~ 7700 2500
 Wire Wire Line
 	8100 1850 8450 1850
 Wire Wire Line
-	8450 1850 8450 2550
+	8450 1850 8450 2200
 Wire Wire Line
 	8100 1850 7700 1850
 Wire Wire Line
@@ -367,13 +354,6 @@ Wire Wire Line
 Connection ~ 3550 2150
 Wire Wire Line
 	3550 2600 3550 2150
-Wire Wire Line
-	3000 2150 3550 2150
-Connection ~ 3000 2150
-Wire Wire Line
-	3000 2600 3000 2150
-Wire Wire Line
-	2500 2150 3000 2150
 Connection ~ 2500 2150
 Wire Wire Line
 	2100 2150 2500 2150
@@ -450,10 +430,10 @@ L Device:C_Small C3
 U 1 1 5E347A50
 P 3550 2700
 F 0 "C3" H 3642 2746 50  0000 L CNN
-F 1 "0.1uF" H 3642 2655 50  0000 L CNN
-F 2 "Capacitor_SMD:C_0603_1608Metric" H 3550 2700 50  0001 C CNN
+F 1 "100uF" H 3642 2655 50  0000 L CNN
+F 2 "Capacitor_Tantalum_SMD:CP_EIA-3528-15_AVX-H" H 3550 2700 50  0001 C CNN
 F 3 "~" H 3550 2700 50  0001 C CNN
-F 4 "C14663" H 3550 2700 50  0001 C CNN "LCSC"
+F 4 "C16133" H 3550 2700 50  0001 C CNN "LCSC"
 	1    3550 2700
 	1    0    0    -1  
 $EndComp
@@ -476,10 +456,10 @@ L Device:R R6
 U 1 1 5E302873
 P 4050 2500
 F 0 "R6" H 4120 2546 50  0000 L CNN
-F 1 "200" H 4120 2455 50  0000 L CNN
+F 1 "300" H 4120 2455 50  0000 L CNN
 F 2 "Resistor_SMD:R_0805_2012Metric" V 3980 2500 50  0001 C CNN
 F 3 "~" H 4050 2500 50  0001 C CNN
-F 4 "C17540" H 4050 2500 50  0001 C CNN "LCSC"
+F 4 "C17617" H 4050 2500 50  0001 C CNN "LCSC"
 	1    4050 2500
 	1    0    0    -1  
 $EndComp
@@ -540,7 +520,7 @@ U 1 1 5DB54CA3
 P 9950 2700
 F 0 "RV1" H 9880 2654 50  0000 R CNN
 F 1 "100k" H 9880 2745 50  0000 R CNN
-F 2 "Custom Footprint:Potentiometer_4mm_Pitch" H 9950 2700 50  0001 C CNN
+F 2 "Custom Footprint:Potentiometer_5.08mm_Pitch" H 9950 2700 50  0001 C CNN
 F 3 "~" H 9950 2700 50  0001 C CNN
 	1    9950 2700
 	-1   0    0    1   
@@ -551,7 +531,7 @@ U 1 1 5DB547D6
 P 9950 4500
 F 0 "RV3" H 9880 4454 50  0000 R CNN
 F 1 "100k" H 9880 4545 50  0000 R CNN
-F 2 "Custom Footprint:Potentiometer_4mm_Pitch" H 9950 4500 50  0001 C CNN
+F 2 "Custom Footprint:Potentiometer_5.08mm_Pitch" H 9950 4500 50  0001 C CNN
 F 3 "~" H 9950 4500 50  0001 C CNN
 	1    9950 4500
 	-1   0    0    1   
@@ -562,7 +542,7 @@ U 1 1 5DB53CD3
 P 9950 3550
 F 0 "RV2" H 9880 3504 50  0000 R CNN
 F 1 "100k" H 9880 3595 50  0000 R CNN
-F 2 "Custom Footprint:Potentiometer_4mm_Pitch" H 9950 3550 50  0001 C CNN
+F 2 "Custom Footprint:Potentiometer_5.08mm_Pitch" H 9950 3550 50  0001 C CNN
 F 3 "~" H 9950 3550 50  0001 C CNN
 	1    9950 3550
 	-1   0    0    1   
@@ -583,8 +563,6 @@ Wire Wire Line
 	9050 3650 9500 3650
 Wire Wire Line
 	9050 3750 9500 3750
-Wire Wire Line
-	8750 2200 9950 2200
 Wire Wire Line
 	9950 4200 10450 4200
 Wire Wire Line
@@ -613,28 +591,52 @@ Wire Wire Line
 Wire Wire Line
 	9800 2700 9350 2700
 Wire Wire Line
-	2250 6050 1800 6050
-Wire Wire Line
-	2950 5950 3250 5950
-Connection ~ 3250 5950
-Wire Wire Line
-	3250 5950 3750 5950
-Wire Wire Line
-	3750 5750 3750 5950
-Wire Wire Line
-	2300 5850 2300 5300
-Wire Wire Line
-	2300 5300 2950 5300
-Wire Wire Line
-	1800 5850 2300 5850
-Connection ~ 3250 5300
-Connection ~ 2950 5300
-Wire Wire Line
-	2950 5300 3250 5300
-Wire Wire Line
-	3250 5300 3750 5300
+	3850 5850 3850 6050
 Text Notes 7400 7500 0    79   ~ 0
 LED Control PCB
 Text Notes 10600 7650 0    79   ~ 0
-1
+2\n
+Text GLabel 2300 5250 1    50   Input ~ 0
+VCC
+Wire Wire Line
+	2600 5950 2600 5400
+Wire Wire Line
+	2600 5400 2950 5400
+Wire Wire Line
+	1800 5950 2600 5950
+Connection ~ 2950 5400
+Connection ~ 3850 6050
+Wire Wire Line
+	3850 6050 4350 6050
+Wire Wire Line
+	3350 6050 3850 6050
+Wire Wire Line
+	2950 5400 3350 5400
+Wire Wire Line
+	1800 6050 2800 6050
+Wire Wire Line
+	3100 6050 3350 6050
+Connection ~ 3350 6050
+Wire Wire Line
+	3350 5400 3850 5400
+Wire Wire Line
+	3850 5400 3850 5550
+Connection ~ 3350 5400
+Wire Wire Line
+	2300 5850 2300 5250
+Wire Wire Line
+	1800 5850 2300 5850
+Wire Wire Line
+	8450 2200 9950 2200
+Connection ~ 8450 2200
+Wire Wire Line
+	8450 2200 8450 2550
+NoConn ~ 8750 2550
+Wire Wire Line
+	3000 2600 3000 2150
+Wire Wire Line
+	2500 2150 3000 2150
+Connection ~ 3000 2150
+Wire Wire Line
+	3000 2150 3550 2150
 $EndSCHEMATC
