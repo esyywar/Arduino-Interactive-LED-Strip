@@ -53,12 +53,14 @@ TBlendType    currentBlending;
 
 
 // structure for storing the 3 mapped user inputs
-typedef struct userSettings {
+typedef struct {
   uint16_t inputA;
   uint16_t inputB;
   uint16_t inputC;
-} userInput;
+} LEDSettings;
 
+// global variable to store user inputs
+LEDSettings userInput;
 
 // Defining custom palette of Raptors colours!
 const TProgmemPalette16 TorontoRaptors_p PROGMEM =
@@ -233,26 +235,23 @@ void changeMode() {
 
 
 // returns mapped inputs from input knobs in form of structure 'userSettings'
-userSettings mapInputs (uint16_t range1, uint16_t range2, uint16_t range3) {
-  userSettings mapped;
+void mapInputs (LEDSettings *newSettings, uint16_t range1, uint16_t range2, uint16_t range3) {
 
   // read and map the values
-  mapped.inputA = map(analogRead(potReadPin[0]), 0, 1023, 0, range1);
-  mapped.inputB = map(analogRead(potReadPin[1]), 0, 1023, 0, range2);
-  mapped.inputC = map(analogRead(potReadPin[2]), 0, 1023, 0, range3);
-
-  return mapped;
+  newSettings->inputA = map(analogRead(potReadPin[0]), 0, 1023, 0, range1);
+  newSettings->inputB = map(analogRead(potReadPin[1]), 0, 1023, 0, range2);
+  newSettings->inputC = map(analogRead(potReadPin[2]), 0, 1023, 0, range3);
 }
 
 
 // MODE:0 - takes user input and maps to HSV colours
 void staticColourSet() {
   // create variable of structure 'userSettings' and fill with mapped values
-  userSettings colours = mapInputs(255, 255, 255);
+  mapInputs(&userInput, 255, 255, 255);
 
   for (int i = 0; i < NUM_LEDS; i++)
   {
-      leds[i] = CHSV(colours.inputA, colours.inputB, colours.inputC);
+      leds[i] = CHSV(userInput.inputA, userInput.inputB, userInput.inputC);
   }
 }
 
@@ -260,13 +259,13 @@ void staticColourSet() {
 // MODE:1 - goes through patterns of changing LEDs from the loaded palette
 void lightShow(uint16_t startIndex) {
 
-  userSettings pattern = mapInputs(7, 255, 255);
+  mapInputs(&userInput, 7, 255, 255);
 
   // first knob is adjusted to choose the colour palette
   // second knob is manipulate motion speed
   // third knob assigns brightness
 
-  switch (pattern.inputA)
+  switch (userInput.inputA)
   {
     case 0:
       currentPalette = RainbowColors_p;
@@ -293,8 +292,8 @@ void lightShow(uint16_t startIndex) {
   // write to LEDS as required
   for (int i = 0; i < NUM_LEDS; i++) 
   {
-      leds[i] = ColorFromPalette(currentPalette, startIndex, pattern.inputC, currentBlending);
-      startIndex += pattern.inputB;
+      leds[i] = ColorFromPalette(currentPalette, startIndex, userInput.inputC, currentBlending);
+      startIndex += userInput.inputB;
   }
 }
 
@@ -302,7 +301,7 @@ void lightShow(uint16_t startIndex) {
 // MODE:2 - real time music visualizer (can configure origin LED, sensitivity and rate of colour change)
 void musicVisualizer() {
   
-  userSettings musicSettings = mapInputs(NUM_LEDS, SENSOR_MAX, 255);  // second map value due to a 1:10 pull down resistor on sensor pin
+  mapInputs(&userInput, NUM_LEDS, SENSOR_MAX, 255);  // second map value due to a 1:10 pull down resistor on sensor pin
 
   // initialize the colour which will be swept through
   static uint8_t colour = 1;
@@ -313,10 +312,10 @@ void musicVisualizer() {
   sensorValue = analogRead(sensorPin);
 
   // colour the first pixel according to the live sound
-  colourOriginPixel(sensorValue, colour, musicSettings.inputA, musicSettings.inputB, musicSettings.inputC);  
+  colourOriginPixel(sensorValue, colour, userInput.inputA, userInput.inputB, userInput.inputC);  
 
   // propagate the colour wave in 2 directions from origin
-  pointSourceWave(musicSettings.inputA);  
+  pointSourceWave(userInput.inputA);  
 }
 
 
