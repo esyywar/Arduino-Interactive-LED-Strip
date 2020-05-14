@@ -238,9 +238,12 @@ void changeMode() {
 void mapInputs (LEDSettings *newSettings, uint16_t range1, uint16_t range2, uint16_t range3) {
 
   // read and map the values
-  newSettings->inputA = map(analogRead(potReadPin[0]), 0, 1023, 0, range1);
-  newSettings->inputB = map(analogRead(potReadPin[1]), 0, 1023, 0, range2);
-  newSettings->inputC = map(analogRead(potReadPin[2]), 0, 1023, 0, range3);
+  // Note: Experimentally determined maximum reading from potentiometers is 860 bits when in PCB
+  newSettings->inputA = map(analogRead(potReadPin[0]), 0, 860, 0, range1);
+  newSettings->inputB = map(analogRead(potReadPin[1]), 0, 860, 0, range2);
+  newSettings->inputC = map(analogRead(potReadPin[2]), 0, 860, 0, range3);
+
+  Serial.println(analogRead(potReadPin[1]));
 }
 
 
@@ -248,6 +251,8 @@ void mapInputs (LEDSettings *newSettings, uint16_t range1, uint16_t range2, uint
 void staticColourSet() {
   // create variable of structure 'userSettings' and fill with mapped values
   mapInputs(&userInput, 255, 255, 255);
+
+  
 
   for (int i = 0; i < NUM_LEDS; i++)
   {
@@ -308,7 +313,6 @@ void musicVisualizer() {
 
   colour++;
  
-  // read sensor value that is averaged over specified number of data points
   sensorValue = analogRead(sensorPin);
 
   // colour the first pixel according to the live sound
