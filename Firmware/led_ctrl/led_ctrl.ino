@@ -27,8 +27,8 @@ CRGB leds[NUM_LEDS];
 // change mode button pin to attach interrupt
 #define BTN_PIN 2
 
-// maximum analog reading from sound sensor (sensor read out is after 10k/100k voltage divider and therefore 1023/11=93)
-#define SENSOR_MAX 93
+// maximum analog reading from sound sensor (sensor read out is after 10k/100k voltage divider and therefore 1023/11=93) - Experimentally observed highs of 97
+#define SENSOR_MAX 97
 
 // user input control pins
 uint8_t potReadPin[] = {0, 1, 2};
@@ -238,12 +238,9 @@ void changeMode() {
 void mapInputs (LEDSettings *newSettings, uint16_t range1, uint16_t range2, uint16_t range3) {
 
   // read and map the values
-  // Note: Experimentally determined maximum reading from potentiometers is 860 bits when in PCB
-  newSettings->inputA = map(analogRead(potReadPin[0]), 0, 860, 0, range1);
-  newSettings->inputB = map(analogRead(potReadPin[1]), 0, 860, 0, range2);
-  newSettings->inputC = map(analogRead(potReadPin[2]), 0, 860, 0, range3);
-
-  Serial.println(analogRead(potReadPin[1]));
+  newSettings->inputA = map(analogRead(potReadPin[0]), 0, 1023, 0, range1);
+  newSettings->inputB = map(analogRead(potReadPin[1]), 0, 1023, 0, range2);
+  newSettings->inputC = map(analogRead(potReadPin[2]), 0, 1023, 0, range3);
 }
 
 
@@ -305,8 +302,9 @@ void lightShow(uint16_t startIndex) {
 
 // MODE:2 - real time music visualizer (can configure origin LED, sensitivity and rate of colour change)
 void musicVisualizer() {
-  
-  mapInputs(&userInput, NUM_LEDS, SENSOR_MAX, 255);  // second map value due to a 1:10 pull down resistor on sensor pin
+
+  // Potentiometer 1 is origin LED number, 2 is the sensor threshold value to show colour, 3 is minimum value for brightness range
+  mapInputs(&userInput, NUM_LEDS - 1, SENSOR_MAX, 254);  // second map value due to a 1:10 pull down resistor on sensor pin
 
   // initialize the colour which will be swept through
   static uint8_t colour = 1;
@@ -314,6 +312,8 @@ void musicVisualizer() {
   colour++;
  
   sensorValue = analogRead(sensorPin);
+
+  Serial.println(sensorValue);
 
   // colour the first pixel according to the live sound
   colourOriginPixel(sensorValue, colour, userInput.inputA, userInput.inputB, userInput.inputC);  
@@ -327,7 +327,7 @@ void musicVisualizer() {
 void colourOriginPixel (uint16_t sensorValue, uint8_t colour, uint16_t origin, uint16_t threshold, uint8_t minBrightness) {
   if (sensorValue > threshold)
   {
-    leds[origin] = CHSV(colour, 255, map(sensorValue, 0, SENSOR_MAX, (minBrightness * 0.9), 255));
+    leds[origin] = CHSV(colour, 255, map(sensorValue, 0, SENSOR_MAX, minBrightness, 255));
   }
   else 
   {
