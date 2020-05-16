@@ -261,7 +261,7 @@ void staticColourSet() {
 // MODE:1 - goes through patterns of changing LEDs from the loaded palette
 void lightShow(uint16_t startIndex) {
 
-  mapInputs(&userInput, 7, 255, 255);
+  mapInputs(&userInput, 6, 255, 255);
 
   // first knob is adjusted to choose the colour palette
   // second knob is manipulate motion speed
@@ -284,7 +284,7 @@ void lightShow(uint16_t startIndex) {
     case 4:
       currentPalette = Lakers_p;
      break;
-    case 5 ... 7:
+    case 5 ... 6:
       currentPalette = India_p;
      break;
     default:
