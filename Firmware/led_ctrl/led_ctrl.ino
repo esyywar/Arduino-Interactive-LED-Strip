@@ -11,7 +11,7 @@
 // FastLED library definitions
 #include <FastLED.h>
 #define LED_PIN     4
-#define NUM_LEDS    60
+#define NUM_LEDS    111
 #define BRIGHTNESS  64
 #define CONTROLS    3
 #define LED_TYPE    WS2811
