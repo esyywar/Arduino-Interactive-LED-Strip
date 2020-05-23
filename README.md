@@ -27,5 +27,5 @@ The arduino nano code for this controller. Simple code using FastLED library and
 
 ## PCB-Design
 
-PCB designed in KiCAD to recreate this controller! Complete bill of materials provided. 
-Can be assembled for about 30 - 70 CAD depending on how much you spend for PCB fabrication and the LED strip.
+PCB designed in KiCAD to recreate this controller
+Can be assembled for about 40 - 80 CAD depending on how much you spend for PCB fabrication and the LED strip.
