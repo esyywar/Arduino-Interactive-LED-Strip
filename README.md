@@ -2,6 +2,8 @@
 
 This project features the hardware and software development of a multi-function LED strip controller!
 
+<img src="images/led_ctrl_pcb.jpg" />
+
 The light strip has 3 different modes:
 1. HSV Static Colour Set
 2. Patterned Light Show
@@ -17,11 +19,13 @@ Here are the functions of each knob in each mode:
 | Patterned Light Show | Colour Pattern | Scramble Effect | Brightness |
 | Music Wave Visualizer | Wave Point Source | Volume Sensitivity | Brightness |
 
-## Software
+Folders in the repository are organized as follows:
+
+## Firmware
 
 The arduino nano code for this controller. Simple code using FastLED library and interrupts for switching modes.
 
-## Hardware
+## PCB-Design
 
 PCB designed in KiCAD to recreate this controller! Complete bill of materials provided. 
 Can be assembled for about 30 - 70 CAD depending on how much you spend for PCB fabrication and the LED strip.
